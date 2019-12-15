@@ -1,3 +1,45 @@
 #+TITLE: IMDb
 
 /An actor network./
+
+** Introduction
+
+This library is a testbed which takes a yaml-defined graph and turns
+that graph into a set of processes which communicate according to the
+graph. For example, the graph decribed below:
+
+#+BEGIN_SRC yaml
+# TODO: change this to the map-style graph.
+graph:
+  root: a
+  vertices:
+    - name: a
+      egress:
+        - b
+        - c
+    - name: b
+      egress:
+        - d
+    - name: c
+      egress:
+        - d
+    - name: d
+#+END_SRC
+
+Will build a network of four processes to communicate like so:
+
+#+BEGIN_SRC
+     +->(b)--+
+     |       |
+(a)--+       +->(d)
+     |       |
+     +->(c)--+
+#+END_SRC
+
+To be valid, a graph must a) contain a root and b) be acyclic.
+
+These graphs will act as unique testbeds for a future tracing library
+where the given graph and its resultant processes can be subject to
+the tracing library whose results we can analyze against the known
+shape of the graph to determine at least one form of "correctness" for
+that trace.
