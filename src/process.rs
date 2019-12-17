@@ -37,8 +37,12 @@ impl<T> Process<T> {
 
 impl<T> Network<T> {
     pub fn run(self) {
+        let handles = Vec::new();
         for (_, proc) in self.network {
-            std::thread::spawn(move || proc.run());
+            handles.push(std::thread::spawn(move || proc.run()));
+        }
+        for h in handles.iter() {
+            h.join();
         }
     }
 }
