@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{thread, time::Duration};
 
 use log::info;
 
@@ -9,31 +9,45 @@ fn main() {
 
     let mut net = Network::new();
 
-    net.add_process("a", vec!["b", "c"], (), |_: HashMap<_, ()>, _| {
-        info!("hello from inside the body of a");
-        let mut outgoing = HashMap::new();
-        outgoing.insert("b".to_string(), ());
-        outgoing.insert("c".to_string(), ());
-        (outgoing, ())
+    net.add_process("a", vec!["b", "c"], |senders, _| loop {
+        thread::sleep(Duration::from_secs(1));
+        for (adj, s) in senders.iter() {
+            info!("a is sending to {}", adj);
+            s.send(("a".to_string(), ()))
+                .expect("shouldn't encounter a closed channel");
+        }
     });
 
-    net.add_process("b", vec!["d"], (), |_, _| {
-        info!("hello from inside the body of b");
-        let mut outgoing = HashMap::new();
-        outgoing.insert("d".to_string(), ());
-        (outgoing, ())
+    net.add_process("b", vec!["d"], |senders, receiver| loop {
+        thread::sleep(Duration::from_secs(1));
+        let (sender, _) = receiver
+            .recv()
+            .expect("shouldn't encounter a closed channel");
+        info!("b received from {}", sender);
+        for s in senders.values() {
+            s.send(("b".to_string(), ()))
+                .expect("shouldn't encounter a closed channel");
+        }
     });
 
-    net.add_process("c", vec!["d"], (), |_, _| {
-        info!("hello from inside the body of c");
-        let mut outgoing = HashMap::new();
-        outgoing.insert("d".to_string(), ());
-        (outgoing, ())
+    net.add_process("c", vec!["d"], |senders, receiver| loop {
+        thread::sleep(Duration::from_secs(1));
+        let (sender, _) = receiver
+            .recv()
+            .expect("shouldn't encounter a closed channel");
+        info!("c received from {}", sender);
+        for s in senders.values() {
+            s.send(("c".to_string(), ()))
+                .expect("shouldn't encounter a closed channel");
+        }
     });
 
-    net.add_process("d", Vec::new(), (), |_, _| {
-        info!("hello from inside the body of d");
-        (HashMap::new(), ())
+    net.add_process("d", vec![], |_, receiver| loop {
+        thread::sleep(Duration::from_secs(1));
+        let (sender, _) = receiver
+            .recv()
+            .expect("shouldn't encounter a closed channel");
+        info!("d received from {}", sender);
     });
 
     net.start();
