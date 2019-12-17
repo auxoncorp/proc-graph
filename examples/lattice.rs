@@ -1,10 +1,6 @@
-#+TITLE: IMDb
-
-A small library which converts a process graph into a set of
-communicating processes.
-
-#+BEGIN_SRC rust
 use std::{thread, time::Duration};
+
+use log::info;
 
 use imdb::Network;
 
@@ -16,7 +12,7 @@ fn main() {
     net.add_process("a", vec!["b", "c"], |senders, _| loop {
         thread::sleep(Duration::from_secs(1));
         for (adj, s) in senders.iter() {
-            println!("a is sending to {}", adj);
+            info!("a is sending to {}", adj);
             s.send(("a".to_string(), ()))
                 .expect("shouldn't encounter a closed channel");
         }
@@ -27,7 +23,7 @@ fn main() {
         let (sender, _) = receiver
             .recv()
             .expect("shouldn't encounter a closed channel");
-        println!("b received from {}", sender);
+        info!("b received from {}", sender);
         for s in senders.values() {
             s.send(("b".to_string(), ()))
                 .expect("shouldn't encounter a closed channel");
@@ -39,7 +35,7 @@ fn main() {
         let (sender, _) = receiver
             .recv()
             .expect("shouldn't encounter a closed channel");
-        println!("c received from {}", sender);
+        info!("c received from {}", sender);
         for s in senders.values() {
             s.send(("c".to_string(), ()))
                 .expect("shouldn't encounter a closed channel");
@@ -51,9 +47,8 @@ fn main() {
         let (sender, _) = receiver
             .recv()
             .expect("shouldn't encounter a closed channel");
-        println!("d received from {}", sender);
+        info!("d received from {}", sender);
     });
 
-    net.start();
+    net.start_and_wait();
 }
-#+END_SRC
