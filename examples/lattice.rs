@@ -50,5 +50,5 @@ fn main() {
         info!("d received from {}", sender);
     });
 
-    net.start();
+    net.start_and_wait();
 }
