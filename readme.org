@@ -1,4 +1,4 @@
-#+TITLE: IMDb
+#+TITLE: proc-graph
 
 A small library which converts a process graph into a set of
 communicating processes.
