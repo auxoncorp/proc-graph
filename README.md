@@ -1,9 +1,22 @@
-#+TITLE: proc-graph
+# proc-graph
+
+## Overview
 
 A small library which converts a process graph into a set of
 communicating processes.
 
-#+BEGIN_SRC rust
+## Getting Started
+
+```toml
+# Cargo.toml
+
+[dependencies]
+proc-graph = "0.1"
+```
+
+## Usage
+
+```rust
 use std::{thread, time::Duration};
 
 use imdb::Network;
@@ -56,4 +69,10 @@ fn main() {
 
     net.start();
 }
-#+END_SRC
+```
+
+## License
+
+`proc-graph` is licensed under the MIT License (MIT) unless otherwise
+noted. Please see [LICENSE](./LICENSE) for more details.
+

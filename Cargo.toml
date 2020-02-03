@@ -3,8 +3,10 @@ name = "proc-graph"
 version = "0.1.0"
 authors = ["dan pittman <dan@auxon.io>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license-file = "LICENSE"
+repository = "https://github.com/auxoncorp/proc-graph"
+readme = "README.md"
+description = "Convert a process graph into a set of communicating processes"
 
 [dependencies]
 log = "0.4"
