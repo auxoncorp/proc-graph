@@ -19,7 +19,7 @@ proc-graph = "0.1"
 ```rust
 use std::{thread, time::Duration};
 
-use imdb::Network;
+use proc_graph::Network;
 
 fn main() {
     env_logger::init();
