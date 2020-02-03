@@ -2,7 +2,7 @@ use std::{thread, time::Duration};
 
 use log::info;
 
-use imdb::Network;
+use proc_graph::Network;
 
 fn main() {
     env_logger::init();
